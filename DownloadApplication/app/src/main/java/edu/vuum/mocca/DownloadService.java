@@ -51,7 +51,7 @@ public class DownloadService extends Service {
     public static String getPathname(Message message) {
 	Bundle data = message.getData();
 	String pathname = data.getString("PATHNAME");
-	if (mesage.arg1 != Activity.RESULT_OK
+	if (message.arg1 != Activity.RESULT_OK
 	    || pathname == null)
 	    return null;
 	else
@@ -75,7 +75,7 @@ public class DownloadService extends Service {
 	}
 
 	private Message makeReplyMessage(String pathname) {
-	    Message message = Mesage.obtain();
+	    Message message = Message.obtain();
 	    message.arg1 = pathname == null
 		? Activity.RESULT_CANCELED
 		: Activity.RESULT_OK;
@@ -92,7 +92,7 @@ public class DownloadService extends Service {
 					    int startId) {
 	    Message message = Message.obtain();
 	    message.obj = intent;
-	    message.arg1 = satrtId;
+	    message.arg1 = startId;
 	    return message;
 	}
 
