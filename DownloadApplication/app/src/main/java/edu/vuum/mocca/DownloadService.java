@@ -74,20 +74,6 @@ public class DownloadService extends Service {
 	    super(looper);
 	}
 
-	private Message makeReplyMessage(String pathname) {
-	    Message message = Message.obtain();
-	    message.arg1 = pathname == null
-		? Activity.RESULT_CANCELED
-		: Activity.RESULT_OK;
-
-	    Bundle data = new Bundle();
-
-	    data.putString("PATHNAME",
-			   pathname);
-	    message.setData(data);
-	    return message;
-	}
-
 	private Message makeDownloadMessage(Intent intent,
 					    int startId) {
 	    Message message = Message.obtain();
@@ -96,6 +82,11 @@ public class DownloadService extends Service {
 	    return message;
 	}
 
+	public void handleMessage(Message message) {
+	    downloadImageAndReply((Intent) message.obj);
+	    stopSelf(message.arg1);
+	}
+	
 	private void downloadImageAndReply(Intent intent) {
 	    String pathname = downloadImage(DownloadService.this,
 					    intent.getData().toString());
@@ -103,39 +94,6 @@ public class DownloadService extends Service {
 	    Messenger messenger = (Messenger)
 		intent.getExtras().get("MESSENGER");
 	    sendPath(messenger, pathname);
-	}
-
-	private void sendPath(Messenger messenger,
-			      String pathname) {
-	    Message message = makeReplyMessage(pathname);
-	    try {
-		messenger.send(message);
-	    } catch (RemoteException e) {
-		Log.e(getClass().getName(),
-		      "Exception while sending,",
-		      e);
-	    }
-	}
-
-	private File getTemporaryFile(final Context context,
-				      final String url) throws IOException {
-	    return context.getFileStreamPath(Base64.encodeToString(url.getBytes(),
-								   Base64.NO_WRAP)
-					     + System.currentTimeMillis());
-	}
-
-	private int copy(final InputStream in,
-			 final OutputStream out) throws IOException {
-	    final int BUFFER_LENGTH = 1024;
-	    final byte[] buffer = new byte[BUFFER_LENGTH];
-	    int totalRead = 0;
-	    int read = 0;
-
-	    while ((read = in.read(buffer)) != -1) {
-		out.write(buffer, 0, read);
-		totalRead += read;
-	    }
-	    return totalRead;
 	}
 
 	public String downloadImage(final Context context,
@@ -161,10 +119,52 @@ public class DownloadService extends Service {
 		return null;
 	    }
 	}
+	
+	private File getTemporaryFile(final Context context,
+				      final String url) throws IOException {
+	    return context.getFileStreamPath(Base64.encodeToString(url.getBytes(),
+								   Base64.NO_WRAP)
+					     + System.currentTimeMillis());
+	}
 
-	public void handleMessage(Message message) {
-	    downloadImageAndReply((Intent) message.obj);
-	    stopSelf(message.arg1);
+	private int copy(final InputStream in,
+			 final OutputStream out) throws IOException {
+	    final int BUFFER_LENGTH = 1024;
+	    final byte[] buffer = new byte[BUFFER_LENGTH];
+	    int totalRead = 0;
+	    int read = 0;
+
+	    while ((read = in.read(buffer)) != -1) {
+		out.write(buffer, 0, read);
+		totalRead += read;
+	    }
+	    return totalRead;
+	}
+
+	private void sendPath(Messenger messenger,
+			      String pathname) {
+	    Message message = makeReplyMessage(pathname);
+	    try {
+		messenger.send(message);
+	    } catch (RemoteException e) {
+		Log.e(getClass().getName(),
+		      "Exception while sending,",
+		      e);
+	    }
+	}
+	
+	private Message makeReplyMessage(String pathname) {
+	    Message message = Message.obtain();
+	    message.arg1 = pathname == null
+		? Activity.RESULT_CANCELED
+		: Activity.RESULT_OK;
+
+	    Bundle data = new Bundle();
+
+	    data.putString("PATHNAME",
+			   pathname);
+	    message.setData(data);
+	    return message;
 	}
     }
 
