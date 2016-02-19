@@ -9,7 +9,7 @@ buildscript {
 	System.properties['com.android.build.gradle.overrideVersionCheck']='true'
 }
 
-allproejcts {
+allprojects {
 	repositories {
 		jcenter()
 	}
