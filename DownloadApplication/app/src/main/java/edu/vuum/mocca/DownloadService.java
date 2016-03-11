@@ -84,6 +84,9 @@ public class DownloadService extends Service {
 
 	public void handleMessage(Message message) {
 	    downloadImageAndReply((Intent) message.obj);
+	    // Started service must stop self in a service context or
+	    // be stopped by stopService(Intent) in the activity context
+	    // to not run forever
 	    stopSelf(message.arg1);
 	}
 	

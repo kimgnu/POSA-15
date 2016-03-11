@@ -18,7 +18,7 @@ public class MusicService extends Service
     private String TAG = getClass().getSimpleName();
 
     private static String ACTION_PLAY =
-	"cource.examples.action.PLAY";
+	"course.examples.action.PLAY";
 
     private static boolean mSongPlaying;
 
