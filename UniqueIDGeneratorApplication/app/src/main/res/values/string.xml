@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">UniqueIDGeneratorApplication</string>
+  <string name="your_id">Your Unique ID</string>
+  <string name="generate_button">Generate Unique ID</string>
+</resources>
